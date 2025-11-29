@@ -1,0 +1,15 @@
+cookie:
+  expiry_days: 30
+  key: lkjhf
+  name: Azazel
+credentials:
+  usernames:
+    nanxncndnx:
+      email: machiavelli.co4@gmail.com@gmail.com
+      failed_login_attempts: 0
+      logged_in: false
+      name: Toofan
+      password: $2b$12$Dimssvh115MJnRmuJ1vQJOHJFOMOvJ3GP/Ojn2HZKtfFHLO0gvulG
+pre-authorized:
+  emails:
+  - melsby@gmail.com
