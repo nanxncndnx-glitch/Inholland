@@ -29,5 +29,5 @@ c.execute(""" CREATE TABLE IF NOT EXISTS USERS(id integer primary key AUTOINCREM
       GymName TEXT VARCHAR(30), Email TEXT VARCHAR(20) UNIQUE, City TEXT VARCHAR(20), Password TEXT) """)
 
 #Inserting the First user information into the database =>
-c.execute(""" INSERT INTO USERS(username, FirstName, LastName, GymName, Email, City, Password) VALUES("{}", "{}", "{}", "{}", "{}"); """.format(username, firstname, lastname, gymname, email, city, hash))
+c.execute(""" INSERT INTO USERS(username, FirstName, LastName, GymName, Email, City, Password) VALUES("{}", "{}", "{}", "{}", "{}", "{}", "{}"); """.format(username, firstname, lastname, gymname, email, city, hash))
 con.commit()
