@@ -208,3 +208,5 @@ __marimo__/
 
 # Data
 *.db
+.DS_Store
+Data/config.yaml
