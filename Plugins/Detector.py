@@ -9,6 +9,13 @@ import time
 from datetime import datetime
 import pandas as pd
 
+import os.path
+from dotenv import load_dotenv
+
+load_dotenv()
+API_KEY = os.getenv("Api_Key")
+
+
 def Model():
     # Title
     st.title("Exercise Detection Beta Version")
@@ -70,7 +77,7 @@ def Model():
             try:
                 CLIENT = InferenceHTTPClient(
                     api_url="https://serverless.roboflow.com",
-                    api_key="E657AAKnbTujJWG5aTAt"
+                    api_key=API_KEY
                 )
                 
                 # Model ID for workout pose detection
