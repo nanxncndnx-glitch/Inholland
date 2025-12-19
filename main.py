@@ -1,12 +1,16 @@
 import os.path
 from dotenv import load_dotenv
 
+import random
+import string
+
 import streamlit as st
 import streamlit_authenticator as stauth
 from streamlit_option_menu import option_menu
 import altair as alt
 
 import sqlite3 as sql
+import bcrypt
 
 import yaml
 from yaml.loader import SafeLoader
@@ -158,13 +162,61 @@ if navbar == "Logout":
         authenticator.logout()
 
 #I'm gonna hard code the forget password part without using any extra lib ... =>
+if 'popup_update_password' not in st.session_state:
+    st.session_state.popup_update_password = False
+
+@st.dialog("New Password")
+def ChangingThePassword(origin_email, code, c, conn):
+    st.write("Field The Boxes")
+    unique_code = st.text_input("Two Step Verfication Code")
+    new_password = st.text_input("Your New Password", type="password")
+
+    if st.button("Submit", type="primary"):
+        if unique_code == code:
+            bytes = new_password.encode("utf-8")
+            salt = bcrypt.gensalt()
+            new_password = bcrypt.hashpw(bytes, salt)
+
+            #Updating the DataBase =>
+            c.execute("UPDATE USERS SET Password = ? WHERE Email = ?", (new_password, origin_email))
+            conn.commit()
+
+            #Updating the yaml File =>
+            st.success("Password Changed Successfully")
+        else:
+            st.error("The Code Does Not Match")
+            
+def VerficationCodeGenerator():
+    characters = string.ascii_uppercase + string.digits
+    code = ''.join(random.choice(characters) for i in range(8))
+    return code
+
 if navbar == "Forget Password":
     st.write("Please enter your account email here.")
     origin_email = st.text_input("Email", placeholder="asdfgh@gmail.com")
 
     #email configuration =>
-    information = EmailMessage()
-    information["Subject"] = ""
+    TeamEmail = os.getenv("TeamEmail")
+    TeamEmailPassword = os.getenv("TeamEmailPassword")
     
+    information = EmailMessage()
+    information["From"] = TeamEmail
+    information["To"] = origin_email
+    information["Subject"] = "Verfication Code"
+
     if st.button("Submit", type="primary"):
-        pass
+        try:
+            c.execute(f""" SELECT username FROM USERS WHERE Email = '{origin_email}' """)
+            code = VerficationCodeGenerator()
+            information.set_content(f"Hey This is MyTeam and your verfication code is : {code}")
+
+            #SMTP server =>
+            with smtplib.SMTP("smtp.gmail.com", 587) as smtp:
+                smtp.starttls()
+                smtp.login(TeamEmail, TeamEmailPassword)
+                smtp.send_message(information)
+            
+            ChangingThePassword(origin_email, code, c, conn)
+
+        except:
+            st.error("There is no Account with this Email Address")
