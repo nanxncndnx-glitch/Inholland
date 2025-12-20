@@ -210,3 +210,6 @@ __marimo__/
 *.db
 .DS_Store
 config.yaml
+
+# SmokeTest Files =>
+Testing.py
