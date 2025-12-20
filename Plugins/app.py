@@ -4,7 +4,19 @@ from dotenv import load_dotenv
 import streamlit as st
 from streamlit_option_menu import option_menu
 
+from .styles import (
+    GLASS_SIDEBAR_CSS,
+    MENU_STYLES,
+    get_profile_card_html,
+    GLASS_DIVIDER_HTML,
+    GLASS_FOOTER_STATS_HTML,
+    GLASS_VERSION_BADGE_HTML
+)
+
 from . import Detector
+
+# Apply CSS
+st.markdown(GLASS_SIDEBAR_CSS, unsafe_allow_html=True)
 
 def createPage(username, first_name):
     #loadin data from .env and connecting database =>
@@ -18,17 +30,26 @@ def createPage(username, first_name):
     gymname = c.execute(f""" SELECT GymName FROM USERS WHERE username = '{username}'; """)
 
     with st.sidebar:
-        st.header(f"Welcome :violet[{first_name}]", divider = "grey")
+        # Profile Card
+        st.markdown(get_profile_card_html(first_name), unsafe_allow_html=True)
+    
+        # Navigation Menu
+        selected = option_menu(
+            menu_title=None,
+            options=['Home', 'Detector', 'Analytics', 'Settings'], 
+            icons=['house-fill', 'robot', 'bar-chart-fill', 'gear-fill'], 
+            default_index=0,
+            styles=MENU_STYLES
+        )
 
-        selected = option_menu("DashBoard", ['Home', 'Detector', 'A', 'Settings'], 
-            icons=['house', 'robot', 'microsoft-teams', 'gear'], default_index=1,
-                styles={
-        "container": {"padding": "important", "background-color": "#0F161E", "border-radius" : "10px"},
-        "icon": {"color": "white", "font-size": "20px"}, 
-        "nav-link": {"font-size": "20px", "text-align": "center", "margin":"10px", "--hover-color": "transparent", "border-radius" : "10px"},
-        "nav-link-selected": {"background-color": "#CF9AC4"},
-        }
-    )
+        # Glass Divider
+        st.markdown(GLASS_DIVIDER_HTML, unsafe_allow_html=True)
+    
+        # Glass Footer Stats
+        st.markdown(GLASS_FOOTER_STATS_HTML, unsafe_allow_html=True)
+    
+        # Glass Version Badge
+        st.markdown(GLASS_VERSION_BADGE_HTML, unsafe_allow_html=True)
 
     if selected == "Detector":
         Detector.Model()
