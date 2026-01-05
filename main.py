@@ -92,6 +92,7 @@ def popup_form(username, conn, c):
     if st.button("Submit", type="primary"):
         if gymname and city:
             c.execute(f""" UPDATE USERS SET City = '{city}', GymName = '{gymname}' WHERE username = '{username}'; """)
+            conn.commit()
 
             st.session_state.show_popup = False
             st.success("Information saved Now you can Login to Your Account!")
