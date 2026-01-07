@@ -13,7 +13,7 @@ from .styles import (
     GLASS_VERSION_BADGE_HTML
 )
 
-from . import Detector
+from . import Detector, Analytics
 
 # Apply CSS
 st.markdown(GLASS_SIDEBAR_CSS, unsafe_allow_html=True)
@@ -53,3 +53,6 @@ def createPage(username, first_name):
 
     if selected == "Detector":
         Detector.Model()
+
+    if selected == "Analytics":
+        Analytics.analytics_dashboard()
