@@ -18,7 +18,7 @@ API_KEY = os.getenv("Api_Key")
 
 def Model():
     # Title
-    st.title("Exercise Detection Beta Version")
+    st.title("Exercise Detection")
     st.markdown("Test the Workout Pose Detection model with your video")
 
     # Settings section at the top
@@ -35,7 +35,7 @@ def Model():
     with col3:
         confidence_threshold = st.slider("Confidence Threshold", 0.0, 1.0, 0.5, 0.05)
 
-    st.info(f"📊 Frame skip: {frame_skip} means processing ~{int(30/frame_skip)} frames per second")
+    st.info(f"Frame skip: {frame_skip} means processing ~{int(30/frame_skip)} frames per second")
 
     st.markdown("---")
 
@@ -43,7 +43,7 @@ def Model():
     col1, col2 = st.columns([1, 1])
 
     with col1:
-        st.subheader("📹 Upload Video")
+        st.subheader("Upload Video")
         uploaded_file = st.file_uploader("Choose a video file", type=['mp4', 'mov', 'avi', 'mkv'])
         
         if uploaded_file:
@@ -62,16 +62,16 @@ def Model():
             duration = total_frames / fps
             cap.release()
             
-            st.info(f"📊 Video Info: {total_frames} frames, {fps} FPS, {duration:.1f}s duration")
-            st.info(f"🔍 Will process ~{total_frames // frame_skip} frames")
+            st.info(f"Video Info: {total_frames} frames, {fps} FPS, {duration:.1f}s duration")
+            st.info(f"Will process ~{total_frames // frame_skip} frames")
 
     with col2:
-        st.subheader("🎯 Detection Results")
+        st.subheader("Detection Results")
         results_placeholder = st.empty()
         
     # Process button
     if uploaded_file and api_key:
-        if st.button("🚀 Start Detection", type="primary", use_container_width=True):
+        if st.button("Start Detection", type="primary", use_container_width=True):
             
             # Initialize Roboflow client
             try:
@@ -156,7 +156,7 @@ def Model():
                             processed_count += 1
                             
                         except Exception as e:
-                            st.warning(f"Error processing frame {frame_count}: {str(e)}")
+                            pass
                         
                         finally:
                             # Clean up temp frame
@@ -171,11 +171,11 @@ def Model():
                 cap.release()
                 
                 # Display final results
-                st.success(f"✅ Processing complete! Analyzed {processed_count} frames")
+                st.success(f"Processing complete! Analyzed {processed_count} frames")
                 
                 if detections:
                     st.markdown("---")
-                    st.subheader("📊 Analysis Results")
+                    st.subheader("Analysis Results")
                     
                     # Create DataFrame
                     df = pd.DataFrame(detections)
@@ -199,7 +199,7 @@ def Model():
                         st.metric("API Calls Used", api_calls)
                     
                     # Exercise breakdown
-                    st.markdown("### 🏋️ Exercise Breakdown")
+                    st.markdown("### Exercise Breakdown")
                     exercise_counts = df['exercise'].value_counts()
                     
                     col1, col2 = st.columns([1, 1])
@@ -213,32 +213,32 @@ def Model():
                             st.write(f"**{exercise}**: {count} detections ({percentage:.1f}%)")
                     
                     # Timeline
-                    st.markdown("### ⏱️ Detection Timeline")
+                    st.markdown("### Detection Timeline")
                     st.line_chart(df.set_index('time')['confidence'])
                     
                     # Detailed data
-                    with st.expander("📋 View Detailed Detection Data"):
+                    with st.expander("View Detailed Detection Data"):
                         st.dataframe(df, use_container_width=True)
                         
                         # Download button
                         csv = df.to_csv(index=False)
                         st.download_button(
-                            "📥 Download Results as CSV",
+                            "Download Results as CSV",
                             csv,
                             "detection_results.csv",
                             "text/csv",
                             key='download-csv'
                         )
                 else:
-                    st.warning("⚠️ No exercises detected. Try lowering the confidence threshold or using a different video.")
+                    st.warning("No exercises detected. Try lowering the confidence threshold or using a different video.")
             
             except Exception as e:
-                st.error(f"❌ Error: {str(e)}")
+                st.error(f"Error: {str(e)}")
                 st.info("Make sure your API key is correct and you have API credits available.")
 
     elif uploaded_file and not api_key:
-        st.warning("⚠️ Please enter your Roboflow API key")
+        st.warning("Please enter your Roboflow API key")
         st.info("Get your free API key at: https://roboflow.com")
 
     else:
-        st.info("👆 Upload a video to get started!")
+        st.info("Upload a video to get started!")
